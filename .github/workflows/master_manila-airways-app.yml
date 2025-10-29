@@ -36,5 +36,5 @@ jobs:
       with: 
         app-name: 'manila-airways-app'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_f9a1f1c725844b218955245257cb969e }}
         package: ${{ github.workspace }}/publish

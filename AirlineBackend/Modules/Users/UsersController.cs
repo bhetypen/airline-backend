@@ -11,8 +11,9 @@ namespace AirlineBackend.Modules.Users;
 public class UsersController : ControllerBase
 {
     private readonly UsersService _service;
-    private readonly UsersRepository _repo;
-    public UsersController(UsersService service, UsersRepository repo)
+    private readonly IUsersRepository _repo;
+
+    public UsersController(UsersService service, IUsersRepository repo)
     { _service = service; _repo = repo; }
 
     [HttpPost("register")]
@@ -40,33 +41,36 @@ public class UsersController : ControllerBase
         var user = await _repo.FindByIdAsync(id);
         if (user is null) return NotFound(new { error = "User not found" });
 
-        var dto = new PublicUserDto(user.Id!, user.Email, user.FirstName, user.LastName, user.IsAdmin);
-        return Ok(new { user = dto });
+        return Ok(new
+        {
+            user = new PublicUserDto(
+                user.Id!,
+                user.Email,
+                user.FirstName,
+                user.LastName,
+                user.IsAdmin)
+        });
     }
-
-    [HttpPatch("update-password")]
+    
+    [HttpPatch("password")]
     [Authorize]
-    public async Task<IActionResult> UpdatePassword(UpdatePasswordDto dto)
+    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto body)
     {
-        if (string.IsNullOrEmpty(dto.NewPassword) || dto.NewPassword.Length < 8)
-            return BadRequest(new { error = "Password must be atleast 8 characters" });
-
         var id = User.FindFirstValue("id");
         if (string.IsNullOrEmpty(id)) return NotFound(new { error = "User not found" });
-
-        var ok = await _repo.SetPasswordAsync(id, BCrypt.Net.BCrypt.HashPassword(dto.NewPassword, 10));
+        
+        var ok = await _repo.SetPasswordAsync(id, body.NewPassword);
         if (!ok) return NotFound(new { error = "User not found" });
 
         return StatusCode(201, new { message = "Password reset successfully" });
     }
     
-   
 
     [HttpPatch("{id:length(24)}/set-as-admin")]
     [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> SetAsAdmin([FromRoute] string id, [FromBody] SetAdminDto? body)
      {
-         bool makeAdmin = body?.MakeAdmin ?? true; // default to promote
+         bool makeAdmin = body?.MakeAdmin ?? true;
      
          var updated = await _repo.SetAdminAsync(id, makeAdmin);
          if (updated is null)
@@ -74,14 +78,12 @@ public class UsersController : ControllerBase
      
          return Ok(new
          {
-             updatedUser = new
-             {
-                 id = updated.Id,
-                 email = updated.Email,
-                 firstName = updated.FirstName,
-                 lastName = updated.LastName,
-                 isAdmin = updated.IsAdmin
-             }
+             updatedUser = new PublicUserDto(
+                 updated.Id!,
+                 updated.Email,
+                 updated.FirstName,
+                 updated.LastName,
+                 updated.IsAdmin)
          });
      }
 
@@ -91,11 +93,15 @@ public class UsersController : ControllerBase
     {
         var query = (q ?? "").Trim();
         if (string.IsNullOrEmpty(query)) return Ok(Array.Empty<object>());
+        
         var users = await _repo.SearchAsync(query, limit);
-        return Ok(users.Select(u => new {
-            id = u.Id, email = u.Email,
-            name = string.Join(" ", new[] { u.FirstName, u.LastName }.Where(s => !string.IsNullOrWhiteSpace(s))),
-            isAdmin = u.IsAdmin
-        }));
+        
+        return Ok(users.Select(u => new PublicUserDto(
+            u.Id!,
+            u.Email,
+            u.FirstName,
+            u.LastName,
+            u.IsAdmin
+        )));
     }
 }

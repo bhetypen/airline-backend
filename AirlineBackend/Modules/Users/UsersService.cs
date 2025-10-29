@@ -7,9 +7,10 @@ namespace AirlineBackend.Modules.Users;
 
 public class UsersService
 {
-    private readonly UsersRepository _repo;
+    private readonly IUsersRepository _repo;
     private readonly IAuthService _auth;
-    public UsersService(UsersRepository repo, IAuthService auth) { _repo = repo; _auth = auth; }
+
+    public UsersService(IUsersRepository repo, IAuthService auth) { _repo = repo; _auth = auth; }
 
     public async Task<(int status, object body)> Register(RegisterDto dto)
     {

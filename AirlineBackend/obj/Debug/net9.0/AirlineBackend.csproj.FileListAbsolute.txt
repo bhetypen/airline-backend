@@ -48,3 +48,6 @@ C:\Users\bhety\Documents\ZuittBootcamp\Zuittbootcamp_repo\airline-backend\Airlin
 C:\Users\bhety\Documents\ZuittBootcamp\Zuittbootcamp_repo\airline-backend\AirlineBackend\obj\Debug\net9.0\AirlineBackend.pdb
 C:\Users\bhety\Documents\ZuittBootcamp\Zuittbootcamp_repo\airline-backend\AirlineBackend\obj\Debug\net9.0\AirlineBackend.genruntimeconfig.cache
 C:\Users\bhety\Documents\ZuittBootcamp\Zuittbootcamp_repo\airline-backend\AirlineBackend\obj\Debug\net9.0\ref\AirlineBackend.dll
+C:\Users\bhety\Documents\ZuittBootcamp\Zuittbootcamp_repo\airline-backend\AirlineBackend\obj\Debug\net9.0\AirlineBackend.sourcelink.json
+C:\Users\bhety\Documents\ZuittBootcamp\Zuittbootcamp_repo\airline-backend\AirlineBackend\bin\Debug\net9.0\DotNetEnv.dll
+C:\Users\bhety\Documents\ZuittBootcamp\Zuittbootcamp_repo\airline-backend\AirlineBackend\bin\Debug\net9.0\Sprache.dll

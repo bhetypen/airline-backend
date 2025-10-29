@@ -3,7 +3,8 @@ using MongoDB.Driver;
 
 namespace AirlineBackend.Modules.Users;
 
-public class UsersRepository
+// IMPLEMENT THE INTERFACE
+public class UsersRepository : IUsersRepository
 {
     private readonly IMongoCollection<User> _col;
 

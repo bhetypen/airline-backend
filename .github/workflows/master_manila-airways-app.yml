@@ -16,17 +16,21 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Set up .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.x'
+        dotnet-version: '9.x'
 
-    - name: Build with dotnet
-      run: dotnet build --configuration Release
+    - name: Restore
+      run: dotnet restore AirlineBackend/AirlineBackend.csproj
+
+    - name: Build
+      run: dotnet build AirlineBackend/AirlineBackend.csproj --configuration Release --no-restore
+
+    - name: Publish
+      run: dotnet publish AirlineBackend/AirlineBackend.csproj -c Release -o ${{ github.workspace }}/publish
     
-    - name: dotnet publish
-      run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp 
-
+    
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with: 

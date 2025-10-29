@@ -7,8 +7,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using DotNetEnv;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
+
+builder.Configuration
+	.AddJsonFile("appsettings.json", optional:false, reloadOnChange: true)
+	.AddEnvironmentVariables();
 
 // --- 1. Controllers + Swagger Configuration ---
 builder.Services.AddControllers();
@@ -63,7 +72,12 @@ builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
 var jwt = builder.Configuration.GetSection("Jwt");
 var keyString = jwt["Key"];
 
-// CRITICAL: This is where the application fails if "Jwt:Key" in appsettings.json is empty.
+Console.WriteLine("🔍 Config check:");
+Console.WriteLine($"Mongo Connection: {builder.Configuration["Mongo:ConnectionString"]}");
+Console.WriteLine($"Jwt:Issuer = {jwt["Issuer"]}");
+Console.WriteLine($"Jwt:Audience = {jwt["Audience"]}");
+Console.WriteLine($"Jwt:Key length = {keyString?.Length}");
+
 if(string.IsNullOrWhiteSpace(keyString))
     throw new InvalidOperationException("Missing configuration: Jwt:Key");
 

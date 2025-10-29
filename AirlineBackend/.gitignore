@@ -1,9 +1,3 @@
-# Ignore files containing local and production secrets
-appsettings.Development.json
-appsettings.Production.json
-appsettings.Staging.json
-appsettings.Local.json
-
 # User Secrets store (Visual Studio / dotnet user-secrets)
 .vscode/
 .vs/
